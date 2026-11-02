@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajah Luar Angkasa Interaktif</title>
+    <style>
+        :root {
+            --bg-dark: #0b0d17;
+            --card-bg: #151932;
+            --accent-blue: #00d2ff;
+            --accent-purple: #9d4edd;
+            --text-main: #e0e6ed;
+            --text-muted: #a0aec0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Header */
+        header {
+            background: rgba(21, 25, 50, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: #fff;
+            background: linear-gradient(45deg, rgba(0, 210, 255, 0.2), rgba(157, 78, 221, 0.2));
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Container Content */
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tab 1: Beranda */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: radial-gradient(circle at center, rgba(157, 78, 221, 0.15), transparent 70%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-cta {
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.05);
+        }
+
+        /* Tab 2 & Sub-tabs (Tata Surya) */
+        .sub-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--card-bg);
+            padding: 0.8rem;
+            border-radius: 12px;
+            justify-content: center;
+        }
+
+        .sub-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .sub-btn:hover, .sub-btn.active {
+            background: var(--accent-blue);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .space-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .space-card h2 {
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .space-card p {
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1.2rem;
+            border-radius: 6px;
+        }
+
+        .info-box h4 {
+            color: var(--accent-purple);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-box p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Tab 3: Rasi Bintang */
+        .constellation-display {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .constellation-display { grid-template-columns: 1fr; }
+        }
+
+        .svg-container {
+            background: #05070f;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            min-height: 240px;
+        }
+
+        /* Tab 4: Flashcard */
+        .flashcard-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--card-bg), #1e2447);
+            color: #fff;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #2a1b4e, var(--card-bg));
+            color: var(--accent-blue);
+            transform: rotateY(180deg);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .ctrl-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .ctrl-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">🚀 AstroPortal</div>
+            <ul class="nav-links">
+                <li><button class="nav-btn active" onclick="switchTab('beranda')">Beranda</button></li>
+                <li><button class="nav-btn" onclick="switchTab('tata-surya')">Tata Surya</button></li>
+                <li><button class="nav-btn" onclick="switchTab('rasi')">Rasi Bintang</button></li>
+                <li><button class="nav-btn" onclick="switchTab('flashcard')">Flashcard</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- TAB 1: BERANDA -->
+        <section id="beranda" class="tab-content active">
+            <div class="hero">
+                <h1>Halo Penjelajah Antariksa! 🌌</h1>
+                <p>Selamat datang di AstroPortal. Tempat terbaik untuk menjelajahi keajaiban alam semesta, mengenal planet-planet, bulan, matahari, asteroid, memetakan rasi bintang secara mendetail, dan menguji wawasanmu lewat flashcard interaktif.</p>
+                <button class="btn-cta" onclick="switchTab('tata-surya')">Mulai Penjelajahan 🪐</button>
+            </div>
+        </section>
+
+        <!-- TAB 2: TATA SURYA -->
+        <section id="tata-surya" class="tab-content">
+            <div class="sub-nav">
+                <button class="sub-btn active" onclick="showObject('merkurius')">Merkurius</button>
+                <button class="sub-btn" onclick="showObject('venus')">Venus</button>
+                <button class="sub-btn" onclick="showObject('bumi')">Bumi</button>
+                <button class="sub-btn" onclick="showObject('mars')">Mars</button>
+                <button class="sub-btn" onclick="showObject('jupiter')">Jupiter</button>
+                <button class="sub-btn" onclick="showObject('saturnus')">Saturnus</button>
+                <button class="sub-btn" onclick="showObject('bulan')">Bulan</button>
+                <button class="sub-btn" onclick="showObject('matahari')">Matahari</button>
+                <button class="sub-btn" onclick="showObject('asteroid')">Asteroid & Komet</button>
+            </div>
+
+            <div id="object-display" class="space-card">
+                <!-- Konten dinamis diisi JS -->
+            </div>
+        </section>
+
+        <!-- TAB 3: RASI BINTANG -->
+        <section id="rasi" class="tab-content">
+            <div class="sub-nav">
+                <button class="sub-btn active" onclick="showConstellation('orion')">Orion</button>
+                <button class="sub-btn" onclick="showConstellation('ursa-major')">Ursa Major</button>
+                <button class="sub-btn" onclick="showConstellation('scorpius')">Scorpius</button>
+                <button class="sub-btn" onclick="showConstellation('cassiopeia')">Cassiopeia</button>
+                <button class="sub-btn" onclick="showConstellation('cygnus')">Cygnus</button>
+                <button class="sub-btn" onclick="showConstellation('pegasus')">Pegasus</button>
+            </div>
+
+            <div class="space-card">
+                <div class="constellation-display">
+                    <div>
+                        <h2 id="const-name">Orion</h2>
+                        <p id="const-desc">Penjelasan rasi bintang...</p>
+                        <div class="info-grid" style="grid-template-columns: 1fr;">
+                            <div class="info-box">
+                                <h4>Mitologi & Cerita Rakyat</h4>
+                                <p id="const-myth">-</p>
+                            </div>
+                            <div class="info-box" style="border-left-color: var(--accent-blue);">
+                                <h4>Waktu Terbaik Dilihat</h4>
+                                <p id="const-time">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svg-container" id="svg-holder">
+                        <!-- SVG Gambar Rasi Bintang -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: FLASHCARD -->
+        <section id="flashcard" class="tab-content">
+            <div class="flashcard-wrapper">
+                <div class="flashcard" id="card" onclick="flipCard()">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <span style="font-size: 0.8rem; color: var(--accent-blue); margin-bottom: 1rem;">Klik kartu untuk balik 🔄</span>
+                            <h3 id="card-question">Pertanyaan...</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <span style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Jawaban 💡</span>
+                            <h3 id="card-answer">Jawaban...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="ctrl-btn" onclick="prevCard()">⬅️ Sebelumnya</button>
+                <span id="card-counter" style="color: var(--text-muted);">1 / 15</span>
+                <button class="ctrl-btn" onclick="nextCard()">Berikutnya ➡️</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AstroPortal - Media Pembelajaran Luar Angkasa Interaktif</p>
+    </footer>
+
+    <script>
+        // Data Objek Tata Surya (Lebih Detail)
+        const solarSystemData = {
+            merkurius: {
+                title: "Merkurius (Planet Terdekat)",
+                desc: "Merkurius adalah planet terkecil di Tata Surya dan yang paling dekat dengan Matahari. Jarak rata-ratanya sekitar 57,9 juta kilometer dari Matahari.",
+                feature: "Permukaannya dipenuhi kawah tubrukan meteor dan batuan vulkanik tua yang mirip dengan kondisi Bulan.",
+                unique: "Karena tidak memiliki atmosfer yang tebal untuk memerangkap panas, suhu di Merkurius sangat ekstrem: bisa melonjak hingga 430°C di sisi yang menghadap Matahari, namun terjun bebas hingga -180°C di sisi malamnya."
+            },
+            venus: {
+                title: "Venus (Planet Kembar Bumi)",
+                desc: "Venus adalah planet kedua dari Matahari. Sering dijuluki sebagai 'Bintang Kejora' atau 'Bintang Fajar' karena tampak terang bersinar di langit senja atau subuh.",
+                feature: "Diselimuti awan tebal asam sulfat dan atmosfer yang didominasi oleh gas karbon dioksida pekat.",
+                unique: "Venus adalah planet terpanas di Tata Surya (mencapai 465°C) akibat efek rumah kaca runaway. Uniknya lagi, Venus berotasi dari timur ke barat (berlawanan dari Bumi) dan satu hari di Venus lebih lama dibanding satu tahunnya!"
+            },
+            bumi: {
+                title: "Bumi (Rumah Kita Tercinta)",
+                desc: "Planet ketiga dari Matahari dan satu-satunya objek astronomi di alam semesta yang diketahui secara pasti menopang kehidupan makhluk hidup.",
+                feature: "Permukaannya ditutupi sekitar 71% air cair, serta memiliki atmosfer kaya nitrogen dan oksigen yang melindungi dari radiasi kosmik.",
+                unique: "Menjadi rumah bagi jutaan spesies keanekaragaman hayati, lempeng tektonik aktif yang mendaur ulang mineral, serta medan magnet pelindung (magnetosfer)."
+            },
+            mars: {
+                title: "Mars (Sang Planet Merah)",
+                desc: "Planet keempat dari Matahari. Mars dinamai dari nama dewa perang Romawi karena warna permukaannya yang tampak kemerahan.",
+                feature: "Tanahnya kaya akan kandungan besi oksida (karat besi). Mars memiliki gurun luas, ngarai raksasa (Valles Marineris), dan gunung tertinggi di tata surya (Olympus Mons).",
+                unique: "Mars dulunya diperkirakan memiliki sungai dan lautan air cair purba. Saat ini, para ilmuwan antariksa sedang gencar meneliti Mars sebagai kandidat utama tempat kolonisasi manusia di masa depan."
+            },
+            jupiter: {
+                title: "Jupiter (Raksasa Gas Tata Surya)",
+                desc: "Planet kelima dari Matahari dan merupakan planet terbesar di tata surya kita, berjenis raksasa gas dengan massa yang sangat masif.",
+                feature: "Memiliki badai abadi raksasa bernama 'Bintik Merah Raksasa' (Great Red Spot) yang ukurannya bahkan lebih besar dari Bumi.",
+                unique: "Massa Jupiter dua kali lipat lebih besar jika digabungkan dari seluruh planet lain di Tata Surya. Jupiter juga memiliki sistem puluhan satelit alami, termasuk Ganymede yang merupakan bulan terbesar di tata surya."
+            },
+            saturnus: {
+                title: "Saturnus (Planet Cincin Megah)",
+                desc: "Planet keenam dari Matahari, terkenal sebagai permata tata surya karena sistem cincin esnya yang sangat indah dan kompleks.",
+                feature: "Cincin utamanya terbuat dari miliaran serpihan es murni, batuan kecil, dan debu kosmik yang mengorbit dalam jalur lebar.",
+                unique: "Saturnus adalah planet dengan massa jenis (densitas) terendah di Tata Surya. Jika kamu punya kolam air raksasa yang cukup besar, planet Saturnus dipastikan akan mengapung di atas air!"
+            },
+            bulan: {
+                title: "Bulan (Satelit Alami Bumi)",
+                desc: "Satu-satunya satelit alami permanen yang dimiliki oleh planet Bumi, berjarak sekitar 384.400 km dari Bumi.",
+                feature: "Permukaannya dipenuhi kawah-kawah bekas hantaman meteor dan dataran gelap vulkanik yang disebut 'Maria'.",
+                unique: "Bulan tidak memiliki atmosfer dan air cair. Gaya gravitasi Bulan berperan sangat penting dalam mengatur siklus pasang surut air laut di Bumi serta menjaga kemiringan sumbu rotasi Bumi agar tetap stabil."
+            },
+            matahari: {
+                title: "Matahari (Bintang Pusat Kita)",
+                desc: "Bintang di pusat tata surya yang menyuplai panas, cahaya, dan energi elektromagnetik ke seluruh penjuru tata surya.",
+                feature: "Merupakan bola plasma panas raksasa yang menghasilkan energi melalui reaksi fusi nuklir di intinya (mengubah hidrogen menjadi helium).",
+                unique: "Matahari menyumbang sekitar 99,8% dari total massa keseluruhan Tata Surya. Ukurannya sangat luar biasa besar sehingga sekitar 1,3 juta planet Bumi bisa muat di dalam Matahari!"
+            },
+            asteroid: {
+                title: "Sabuk Asteroid, Meteoroid, & Komet",
+                desc: "Kumpulan sisa material purba pembentukan tata surya yang tidak sempat menyatu menjadi planet.",
+                feature: "Sabuk Asteroid utama terletak di antara orbit Mars dan Jupiter. Sementara Komet adalah benda es antariksa yang memiliki ekor bercahaya saat mendekati Matahari.",
+                unique: "Beberapa asteroid memiliki jalur orbit yang mendekati lintasan Bumi (Near-Earth Objects), dan tabrakan meteor masa lalu diyakini membentuk kawah-kawah bersejarah di Bumi."
+            }
+        };
+
+        // Data Rasi Bintang (Lebih Detail dengan Mitologi)
+        const constellationData = {
+            orion: {
+                name
